@@ -1,5 +1,12 @@
+package grafos;
 
 //Programa en Java para el algoritmo de Dijkstra que encuentra
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.PriorityQueue;
+
 //el camino mas corto para un unico origen
 //Se emplea una matrix de adjacencia para representar el grafo
 
@@ -74,13 +81,65 @@ public class Dijkstra {
         // se imprime el arreglo con las distancias
         printSolution(dist, V);
 }
- 
+    private static void dijkstraRastro(int[][] grafo, int src, List<Integer> nodosVisitados) {
+    int V = grafo.length;
+    int[] dist = new int[V];
+    boolean[] verticeYaProcesado = new boolean[V];
 
-    /*
+    for (int i = 0; i < V; i++) {
+        dist[i] = Integer.MAX_VALUE;
+        verticeYaProcesado[i] = false;
+    }
+    dist[src] = 0;
+
+    for (int count = 0; count < V - 1; count++) {
+        int u = minDistance(dist, verticeYaProcesado);
+        verticeYaProcesado[u] = true;
+
+        for (int v = 0; v < V; v++) {
+            if (!verticeYaProcesado[v] && grafo[u][v] > 0 && dist[u] != Integer.MAX_VALUE
+                    && dist[u] + grafo[u][v] < dist[v]) {
+                dist[v] = dist[u] + grafo[u][v];
+                nodosVisitados.add(v); // Agrega el índice del nodo visitado
+            }
+        }
+    }
+} 
+
+    // TODO: No traza bien las rutas de los indices de los pesos de las aristas, marca una
+    // ruta erronea.
+    public static void dijkstra(int[][] grafo, int src, int dest, List<Integer> nodosVisitados) {
+        int V = grafo.length;
+        int[] dist = new int[V];
+        
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[src] = 0;
+
+        PriorityQueue<Integer> colaPrioridad = new PriorityQueue<>((a, b) -> dist[a] - dist[b]);
+        colaPrioridad.add(src);
+
+        while (!colaPrioridad.isEmpty()) {
+            int u = colaPrioridad.poll();
+            
+            nodosVisitados.add(u);
+
+            for (int v = 0; v < V; v++) {
+                if (grafo[u][v] > 0 && dist[u] != Integer.MAX_VALUE && dist[u] + grafo[u][v] < dist[v]) {
+                    dist[v] = dist[u] + grafo[u][v];
+                    colaPrioridad.add(v);
+                }
+            }
+        }
+
+        System.out.println("Distancia mínima desde " + src + " hasta " + dest + ": " + dist[dest]);
+    }
+
+    
+    
 // driver program to test above function
 public static void main(String[] args)
 {
-   int[][] graph = {{0, 4, 0, 0, 0, 0, 0, 8, 0},
+   int[][] graph = {  {0, 4, 0, 0, 0, 0, 0, 8, 0},
                       {4, 0, 8, 0, 0, 0, 0, 11, 0},
                       {0, 8, 0, 7, 0, 4, 0, 0, 2},
                       {0, 0, 7, 0, 9, 14, 0, 0, 0},
@@ -94,6 +153,13 @@ public static void main(String[] args)
     dijkstra(graph, 0);
     System.out.println("--------------------------------");
     dijkstra(graph, 1);
+    
+    List<Integer> visitados = new ArrayList<>();
+    
+    dijkstra(graph, 0, 4, visitados);
+    
+    System.out.println(visitados);
+    
+    System.out.println();
 }
-*/
 }
