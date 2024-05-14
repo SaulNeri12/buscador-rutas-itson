@@ -7,6 +7,8 @@ package interfaz;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -33,6 +35,33 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         
         
         initComponents();
+        
+        this.mapaPanel.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent me) {
+            
+            }
+
+            @Override
+            public void mousePressed(MouseEvent me) {
+            
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent me) {
+            
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent me) {
+            
+            }
+
+            @Override
+            public void mouseExited(MouseEvent me) {
+            
+            }
+        });
     }
 
     /**
@@ -73,9 +102,6 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -127,7 +153,7 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
                     .addComponent(jButton1)
                     .addComponent(jButton2)
                     .addComponent(jButton3))
-                .addGap(0, 183, Short.MAX_VALUE))
+                .addGap(0, 208, Short.MAX_VALUE))
         );
 
         jLabel1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
@@ -168,14 +194,6 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
                 .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
-
-        jMenu1.setText("File");
-        jMenuBar1.add(jMenu1);
-
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
-
-        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -260,9 +278,6 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JList<String> jList1;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
