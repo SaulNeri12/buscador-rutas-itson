@@ -3,6 +3,12 @@ package grafos;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Representa una locacion (edificio o cualquier lugar) en el mapa
@@ -19,7 +25,9 @@ public class Locacion extends Point {
     public Locacion(int x, int y) {
         this.x = x;
         this.y = y;
+        this.colorPunto = Color.BLACK;
     }
+    
     
     public void setAristasDistancias(int arrDistancias[]) {
         
@@ -74,5 +82,10 @@ public class Locacion extends Point {
     
     public Color getColor() {
         return this.colorPunto;
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("%d. %s", this.id, this.nombre);
     }
 }

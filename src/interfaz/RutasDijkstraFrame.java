@@ -4,6 +4,8 @@
  */
 package interfaz;
 
+import grafos.Dijkstra;
+import grafos.Locacion;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -13,7 +15,10 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.imageio.ImageIO;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 
 /**
@@ -22,8 +27,11 @@ import javax.swing.ImageIcon;
  */
 public class RutasDijkstraFrame extends javax.swing.JFrame {
 
-    private Graphics2D backBuffer;
+    //private Graphics2D backBuffer;
     private ImageIcon imagenMapaITSON;
+    
+    private Dijkstra calculadorRutas;
+    private List<Locacion> listaLocaciones;
     
     /**
      * Creates new form RutasDijkstraFrame
@@ -34,12 +42,31 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         this.imagenMapaITSON = new ImageIcon(getClass().getResource("mapaNainari.jpg"));
         
         
+        this.listaLocaciones = new ArrayList<>();
+        
         initComponents();
         
+        this.inicializarGrafico();
+        
         this.mapaPanel.addMouseListener(new MouseListener() {
+            
             @Override
             public void mouseClicked(MouseEvent me) {
-            
+                
+                DefaultListModel<Locacion> elementos = getDatosListaGrafica();
+                
+                Locacion locacion = new Locacion(me.getX() - 10, me.getY() - 10);
+                locacion.setNombre("Punto " + listaLocaciones.size());
+                
+                System.out.println(locacion.getX() + " " + locacion.getY());
+                
+                listaLocaciones.add(locacion);
+                
+                elementos.addElement(locacion);
+                
+                jList2.setModel(elementos);
+                
+                mapaPanel.repaint();
             }
 
             @Override
@@ -64,6 +91,58 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         });
     }
 
+    public DefaultListModel<Locacion> getDatosListaGrafica() {
+        return (DefaultListModel<Locacion>) this.jList2.getModel();
+    }
+    
+    public void inicializarGrafico() {
+        
+        Locacion lv1800 = new Locacion(347, 282);
+        lv1800.setNombre("LV-1800");
+        
+        Locacion labMecatronica = new Locacion(343, 239);
+        labMecatronica.setNombre("Laboratorios de ingeniería electromecánica y mecatrónica");
+        
+        Locacion lv1200 = new Locacion(337, 311);
+        lv1200.setNombre("LV-1200");
+        
+        Locacion lv1100elec = new Locacion(334, 338);
+        lv1100elec.setNombre("LV-1100");
+        
+        Locacion edfTutorias = new Locacion(342, 386);
+        edfTutorias.setNombre("Tutorias y Educacion Virtual");
+        
+        this.listaLocaciones = new ArrayList<>();
+        
+        this.listaLocaciones.add(lv1800);
+        this.listaLocaciones.add(labMecatronica);
+        this.listaLocaciones.add(lv1200);
+        this.listaLocaciones.add(lv1100elec);
+        this.listaLocaciones.add(edfTutorias);
+        
+        // se asignan los IDS
+        int i=0;
+        
+        for (Locacion l: listaLocaciones) {
+            l.setId(i);
+            i++;
+        }
+        
+        
+        
+        //this.calculadorRutas = Dijkstra();
+    }
+    
+    public void prepararGrafo() {
+        
+    }
+    
+    public void dibujarPuntosMapa(Graphics2D g2d) {
+        for (Locacion l: this.listaLocaciones) {
+            DibujaFormas.dibujarPunto(g2d, l);
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -85,15 +164,20 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
                 at.translate(10, 10);
 
                 g2d.setTransform(at);
+
+                g2d.drawImage(imagenMapaITSON.getImage(), 0, 0, null);
+
+                // dibuja el mapa con sus nodos
+                dibujarPuntosMapa(g2d);
+
                 //g2d.setTransform(at);
                 //g2d.setColor(Color.BLACK);
                 //g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
-                g2d.drawImage(imagenMapaITSON.getImage(), 0, 0, null);
 
             }
         };
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        jList2 = new javax.swing.JList<>();
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -116,12 +200,9 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(jList1);
+        DefaultListModel<Locacion> modelo = new DefaultListModel<>();
+        jList2.setModel(modelo);
+        jScrollPane1.setViewportView(jList2);
 
         jButton1.setText("Agregar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -277,7 +358,7 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JList<String> jList1;
+    private javax.swing.JList<Locacion> jList2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

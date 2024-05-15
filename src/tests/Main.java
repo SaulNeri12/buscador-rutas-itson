@@ -36,7 +36,7 @@ public class Main {
         int destino = scanner.nextInt() - 1;  // Convertimos a índice de matriz (0-14)
         try {
             System.out.println(dijkstra.getTrazaBusquedaRutaMinima(origen, destino));
-            System.out.println("Distancia recorrida: " + dijkstra.getDistancia(origen, destino));
+            System.out.println("Distancia recorrida: " + dijkstra.getDistanciaMinima(origen, destino));
         } catch (Exception ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }

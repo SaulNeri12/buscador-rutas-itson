@@ -22,7 +22,7 @@ public class Dijkstra {
         this.numeroVertices = matriz.length;
     }
 
-    public ResultadoBusqueda calcularRutaMinima(int indiceInicio) {
+    public ResultadoBusqueda calcularRutas(int indiceInicio) {
         int arrDistancias[] = new int[numeroVertices];
         int arrPredecesores[] = new int[numeroVertices];
         
@@ -70,7 +70,7 @@ public class Dijkstra {
      * @return
      * @throws IllegalArgumentException 
      */
-    public int getDistancia(int idOrigen, int idDestino) throws IllegalArgumentException {
+    public int getDistanciaMinima(int idOrigen, int idDestino) throws IllegalArgumentException {
         
         if (!(idOrigen >= 0 && idOrigen < this.matrizAdyacencias.length)) {
             throw new IllegalArgumentException("El ID del nodo de origen es incorrecto");
@@ -80,7 +80,7 @@ public class Dijkstra {
             throw new IllegalArgumentException("El ID del nodo de destino es incorrecto");
         }
         
-        return this.calcularRutaMinima(idOrigen).getDistancias()[idDestino];
+        return this.calcularRutas(idOrigen).getDistancias()[idDestino];
     }
 
     /**
@@ -100,7 +100,7 @@ public class Dijkstra {
             throw new Exception("El ID del nodo de destino es incorrecto");
         }
         
-        ResultadoBusqueda resultadoBusqueda = this.calcularRutaMinima(idOrigen);
+        ResultadoBusqueda resultadoBusqueda = this.calcularRutas(idOrigen);
         int arrDistancias[]     = resultadoBusqueda.getDistancias();
         int arrPredecesores[]   = resultadoBusqueda.getPredecesores();
         int distanciaMinima     = arrDistancias[idDestino];
