@@ -18,8 +18,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -42,11 +45,24 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         this.imagenMapaITSON = new ImageIcon(getClass().getResource("mapaNainari.jpg"));
         
         
-        this.listaLocaciones = new ArrayList<>();
-        
         initComponents();
         
         this.inicializarGrafico();
+        
+        
+        
+        
+        this.locacionesList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent lse) {
+                if (locacionesList.getSelectedValue() != null) {
+                    botonAsignarDistancia.setEnabled(true);
+                } else {
+                    botonAsignarDistancia.setEnabled(false);
+                }
+            }
+        
+        });
         
         this.mapaPanel.addMouseListener(new MouseListener() {
             
@@ -64,7 +80,7 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
                 
                 elementos.addElement(locacion);
                 
-                jList2.setModel(elementos);
+                locacionesList.setModel(elementos);
                 
                 mapaPanel.repaint();
             }
@@ -92,7 +108,7 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
     }
 
     public DefaultListModel<Locacion> getDatosListaGrafica() {
-        return (DefaultListModel<Locacion>) this.jList2.getModel();
+        return (DefaultListModel<Locacion>) this.locacionesList.getModel();
     }
     
     public void inicializarGrafico() {
@@ -120,7 +136,14 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         this.listaLocaciones.add(lv1100elec);
         this.listaLocaciones.add(edfTutorias);
         
-        // se asignan los IDS
+        this.actualizarListaGrafica();
+        
+        //this.calculadorRutas = Dijkstra();
+    }
+    
+    public void actualizarListaGrafica() {
+        DefaultComboBoxModel<Locacion> locacionesModel = new DefaultComboBoxModel<>();
+        
         int i=0;
         
         for (Locacion l: listaLocaciones) {
@@ -128,9 +151,12 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
             i++;
         }
         
+        for (Locacion loc: this.listaLocaciones) {
+            locacionesModel.addElement(loc);
+            i++;
+        }
         
-        
-        //this.calculadorRutas = Dijkstra();
+        this.locacionesList.setModel(locacionesModel);
     }
     
     public void prepararGrafo() {
@@ -177,11 +203,11 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
             }
         };
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList<>();
+        locacionesList = new javax.swing.JList<>();
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        botonAsignarDistancia = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
@@ -201,10 +227,11 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         );
 
         DefaultListModel<Locacion> modelo = new DefaultListModel<>();
-        jList2.setModel(modelo);
-        jScrollPane1.setViewportView(jList2);
+        locacionesList.setModel(modelo);
+        jScrollPane1.setViewportView(locacionesList);
 
         jButton1.setText("Agregar");
+        jButton1.setEnabled(false);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -212,8 +239,15 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         });
 
         jButton2.setText("Eliminar");
+        jButton2.setEnabled(false);
 
-        jButton3.setText("jButton3");
+        botonAsignarDistancia.setText("Asignar Distancia");
+        botonAsignarDistancia.setEnabled(false);
+        botonAsignarDistancia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonAsignarDistanciaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -224,7 +258,7 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton3)
+                .addComponent(botonAsignarDistancia)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -233,7 +267,7 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(botonAsignarDistancia))
                 .addGap(0, 208, Short.MAX_VALUE))
         );
 
@@ -317,6 +351,18 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void botonAsignarDistanciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonAsignarDistanciaActionPerformed
+        
+        Locacion seleccionado = this.locacionesList.getSelectedValue();
+        
+        if (seleccionado == null) {
+            return;
+        }
+        
+        AsignarDistanciaDialog dlg = new AsignarDistanciaDialog(this, true, seleccionado, this.listaLocaciones);
+        
+    }//GEN-LAST:event_botonAsignarDistanciaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -353,16 +399,16 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton botonAsignarDistancia;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JList<Locacion> jList2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JList<Locacion> locacionesList;
     private javax.swing.JPanel mapaPanel;
     // End of variables declaration//GEN-END:variables
 }

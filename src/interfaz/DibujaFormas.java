@@ -80,23 +80,4 @@ public class DibujaFormas {
         //g2d.setFont(fuente);
     }
 
-    public static void pinta_Camino(Graphics g, int x1, int y1, int x2, int y2, Color color) {
-        ((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        BasicStroke stroke = new BasicStroke(3);
-        ((Graphics2D) g).setStroke(stroke);
-        g.setColor(color);
-        g.drawLine(x1 + 10, y1 + 10, x2 + 10, y2 + 10);
-
-    }
-//Pintando nodos que son recorridos
-
-    public static void seleccionNodo(Graphics g, int x, int y, String n, Color co) {
-
-        ((Graphics2D) g).setColor(co);
-        ((Graphics2D) g).setStroke(new BasicStroke(2));//leda el grosor del contorno al circulo        
-        ((Graphics2D) g).fillOval(x, y, 15, 15);//tamanio del circulo
-        ((Graphics2D) g).setColor(Color.BLUE);
-        ((Graphics2D) g).drawOval(x, y, 15, 15);
-
-    }
 }
