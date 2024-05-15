@@ -21,17 +21,30 @@ public class Locacion extends Point {
         this.y = y;
     }
     
-    public void setAristasDistancias(int aristas[]) {
+    public void setAristasDistancias(int arrDistancias[]) {
         
-        this.aristasDistancias = new int[aristas.length];
-        
-        for (int i=0; i < aristas.length; i++) {
-            if (i == this.id) {
-                // hacemos que la distancia con el nodo mismo sea 0 siempre...
-                this.aristasDistancias[this.id] = 0;
-            } else {
-                this.aristasDistancias[i] = aristas[i];
+        if (arrDistancias == null) {
+            return; // No hacemos nada si el arreglo es nulo
+        }
+
+        if (this.aristasDistancias == null || arrDistancias.length > this.aristasDistancias.length) {
+            // Si el arreglo actual es nulo o el nuevo arreglo es más grande,
+            // creamos un nuevo arreglo con el tamaño del nuevo arreglo
+            int[] nuevoArreglo = new int[arrDistancias.length];
+
+            // Si hay un arreglo actual, copiamos sus elementos al nuevo arreglo
+            if (this.aristasDistancias != null) {
+                System.arraycopy(this.aristasDistancias, 0, nuevoArreglo, 0, this.aristasDistancias.length);
             }
+
+            // Copiamos los nuevos elementos al nuevo arreglo
+            System.arraycopy(arrDistancias, 0, nuevoArreglo, 0, arrDistancias.length);
+
+            // Asignamos el nuevo arreglo al arreglo de la clase
+            this.aristasDistancias = nuevoArreglo;
+        } else {
+            // Si el nuevo arreglo no es más grande, simplemente copiamos sus elementos al arreglo de la clase
+            System.arraycopy(arrDistancias, 0, this.aristasDistancias, 0, arrDistancias.length);
         }
     }
     
