@@ -28,9 +28,9 @@ public class DibujaFormas {
         g2d.fillOval(x, y, 10, 10);
         g2d.setColor(Color.BLACK);
         g2d.drawOval(x, y, 10, 10);
-
-        g2d.setColor(Color.BLUE);
-        Font fuente = new Font("Monospaced", Font.BOLD, 16);
+        
+        g2d.setColor(Color.YELLOW);
+        Font fuente = new Font("Monospaced", Font.BOLD, 13);
         g2d.setFont(fuente);
         g2d.drawString(locacion.getNombre(), x, y);
     }

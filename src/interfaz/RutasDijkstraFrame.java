@@ -128,6 +128,39 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         Locacion edfTutorias = new Locacion(342, 386);
         edfTutorias.setNombre("Tutorias y Educacion Virtual");
         
+        Locacion polideportivo = new Locacion(276, 285);
+        polideportivo.setNombre("Polideportivo");
+
+        Locacion cisco = new Locacion(387, 426);
+        cisco.setNombre("Cisco");
+
+        Locacion futbolRapido = new Locacion(392, 226);
+        futbolRapido.setNombre("Futbol rapido");
+
+        Locacion centroIdiomas = new Locacion(393, 484);
+        centroIdiomas.setNombre("Centro de idiomas");
+
+        Locacion biblioteca = new Locacion(515, 410);
+        biblioteca.setNombre("Biblioteca");
+
+        Locacion departamentosItson = new Locacion(603, 359);
+        departamentosItson.setNombre("Departamentos Itson");
+
+        Locacion registroEscolar = new Locacion(431, 418);
+        registroEscolar.setNombre("Registro Escolar");
+
+        Locacion arenaItson = new Locacion(86, 317);
+        arenaItson.setNombre("arena ITSON");
+
+        Locacion canchasBasquetbol = new Locacion(266, 505);
+        canchasBasquetbol.setNombre("Canchas de basquetbol");
+
+        Locacion cafeteria = new Locacion(548, 460);
+        cafeteria.setNombre("Cafeteria");
+
+        Locacion necropcias = new Locacion(695, 537);
+        necropcias.setNombre("Necropcias");
+        
         this.listaLocaciones = new ArrayList<>();
         
         this.listaLocaciones.add(lv1800);
@@ -135,6 +168,17 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         this.listaLocaciones.add(lv1200);
         this.listaLocaciones.add(lv1100elec);
         this.listaLocaciones.add(edfTutorias);
+        this.listaLocaciones.add(polideportivo);
+        this.listaLocaciones.add(cisco);
+        this.listaLocaciones.add(futbolRapido);
+        this.listaLocaciones.add(centroIdiomas);
+        this.listaLocaciones.add(biblioteca);
+        this.listaLocaciones.add(departamentosItson);
+        this.listaLocaciones.add(registroEscolar);
+        this.listaLocaciones.add(arenaItson);
+        this.listaLocaciones.add(canchasBasquetbol);
+        this.listaLocaciones.add(cafeteria);
+        this.listaLocaciones.add(necropcias);
         
         this.actualizarListaGrafica();
         
@@ -192,6 +236,10 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
                 g2d.setTransform(at);
 
                 g2d.drawImage(imagenMapaITSON.getImage(), 0, 0, null);
+
+                // opaca la imagen...
+                g2d.setColor(new Color(0, 0, 0, 70));
+                g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
 
                 // dibuja el mapa con sus nodos
                 dibujarPuntosMapa(g2d);
