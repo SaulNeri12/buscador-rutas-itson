@@ -12,6 +12,8 @@ import javax.swing.JOptionPane;
  */
 public class AsignarDistanciaDialog extends javax.swing.JDialog {
 
+    private int distancia;
+    private Locacion destino;
     /**
      * Creates new form AsignarDistanciaDialog
      */
@@ -38,7 +40,7 @@ public class AsignarDistanciaDialog extends javax.swing.JDialog {
     }
     
     public int getDistancia() {
-        return Integer.parseInt(this.campoDistanciaMetros.getText());
+        return this.distancia;
     }
     
 
@@ -160,12 +162,18 @@ public class AsignarDistanciaDialog extends javax.swing.JDialog {
             return;
         }
         
+        Locacion destino = this.puntoDestinoComboBox.getModel().getElementAt(this.puntoDestinoComboBox.getSelectedIndex());
+        this.destino = destino;
+        
+        
         boolean distanciaValida = this.campoDistanciaMetros.getText().matches("\\d+");
         
         if (!distanciaValida) {
             JOptionPane.showMessageDialog(this, "La distancia solo acepta numeros enteros", "Distancia Erronea", JOptionPane.WARNING_MESSAGE);
             return;
         }
+        
+        this.distancia = Integer.parseInt(this.campoDistanciaMetros.getText());
         
         this.dispose();
     }//GEN-LAST:event_botonAceptarActionPerformed

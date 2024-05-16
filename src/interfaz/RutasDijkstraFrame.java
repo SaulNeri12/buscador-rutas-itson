@@ -413,6 +413,8 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
 
         jLabel3.setText("Distancia (metros): ");
 
+        campoDistanciaAprox.setEditable(false);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -529,6 +531,10 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         
         AsignarDistanciaDialog dlg = new AsignarDistanciaDialog(this, true, seleccionado, this.listaLocaciones);
         
+        this.grafo[seleccionado.getId()][dlg.getDestino().getId()] = dlg.getDistancia();
+        this.grafo[dlg.getDestino().getId()][seleccionado.getId()] = dlg.getDistancia();
+        
+        this.mapaPanel.repaint();
     }//GEN-LAST:event_botonAsignarDistanciaActionPerformed
 
     private void botonCalcularDistanciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCalcularDistanciaActionPerformed
