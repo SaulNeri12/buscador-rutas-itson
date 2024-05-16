@@ -46,7 +46,7 @@ public class DibujaFormas {
         Color color = Color.RED;
         
         if (iluminada) {
-            stroke = new BasicStroke(3);
+            stroke = new BasicStroke(2);
             color = Color.GREEN;
         }
         

@@ -1,14 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
- */
+
 package interfaz;
 
 import grafos.Locacion;
-import java.util.Arrays;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ListModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -37,6 +33,13 @@ public class AsignarDistanciaDialog extends javax.swing.JDialog {
         this.setVisible(true);
     }
     
+    public Locacion getDestino() {
+        return (Locacion) this.puntoDestinoComboBox.getSelectedItem();
+    }
+    
+    public int getDistancia() {
+        return Integer.parseInt(this.campoDistanciaMetros.getText());
+    }
     
 
     /**
@@ -77,8 +80,18 @@ public class AsignarDistanciaDialog extends javax.swing.JDialog {
         });
 
         botonAceptar.setText("Aceptar");
+        botonAceptar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonAceptarActionPerformed(evt);
+            }
+        });
 
         botonCerrar.setText("Cerrar");
+        botonCerrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonCerrarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -137,6 +150,29 @@ public class AsignarDistanciaDialog extends javax.swing.JDialog {
     private void puntoDestinoComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_puntoDestinoComboBoxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_puntoDestinoComboBoxActionPerformed
+
+    private void botonAceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonAceptarActionPerformed
+        
+        boolean locacionSeleccionada = this.puntoDestinoComboBox.getSelectedIndex() != -1;
+        
+        if (!locacionSeleccionada) {
+            JOptionPane.showMessageDialog(this, "Selecciona la locacion destino", "Locacion desconocida", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        boolean distanciaValida = this.campoDistanciaMetros.getText().matches("\\d+");
+        
+        if (!distanciaValida) {
+            JOptionPane.showMessageDialog(this, "La distancia solo acepta numeros enteros", "Distancia Erronea", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        this.dispose();
+    }//GEN-LAST:event_botonAceptarActionPerformed
+
+    private void botonCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCerrarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_botonCerrarActionPerformed
 
 
 

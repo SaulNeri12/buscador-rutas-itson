@@ -28,6 +28,8 @@ public class Dijkstra {
         
         // se rellena el arreglo con valores grandes para TODO:
         Arrays.fill(arrDistancias, Integer.MAX_VALUE);
+        // se rella el arreglo de predecesores con -1 ya que no se sabe por que
+        // nodos se pasara todavia, -1 significa no encontrado o no especificado...
         Arrays.fill(arrPredecesores, -1);
         
         // distancia de inicio por defecto
