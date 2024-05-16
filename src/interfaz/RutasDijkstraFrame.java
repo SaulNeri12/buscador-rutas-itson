@@ -4,6 +4,8 @@
  */
 package interfaz;
 
+import grafos.Dijkstra;
+import grafos.Locacion;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -13,8 +15,14 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.imageio.ImageIO;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -22,8 +30,13 @@ import javax.swing.ImageIcon;
  */
 public class RutasDijkstraFrame extends javax.swing.JFrame {
 
-    private Graphics2D backBuffer;
+    //private Graphics2D backBuffer;
     private ImageIcon imagenMapaITSON;
+    
+    private Dijkstra calculadorRutas;
+    private List<Locacion> listaLocaciones;
+    
+    private int[][] grafo;
     
     /**
      * Creates new form RutasDijkstraFrame
@@ -36,10 +49,42 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         
         initComponents();
         
+        this.inicializarGrafico();
+        
+        
+        
+        
+        this.locacionesList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent lse) {
+                if (locacionesList.getSelectedValue() != null) {
+                    botonAsignarDistancia.setEnabled(true);
+                } else {
+                    botonAsignarDistancia.setEnabled(false);
+                }
+            }
+        
+        });
+        
         this.mapaPanel.addMouseListener(new MouseListener() {
+            
             @Override
             public void mouseClicked(MouseEvent me) {
-            
+                
+                DefaultListModel<Locacion> elementos = getDatosListaGrafica();
+                
+                Locacion locacion = new Locacion(me.getX() - 10, me.getY() - 10);
+                locacion.setNombre("Punto " + listaLocaciones.size());
+                
+                System.out.println(locacion.getX() + " " + locacion.getY());
+                
+                listaLocaciones.add(locacion);
+                
+                elementos.addElement(locacion);
+                
+                locacionesList.setModel(elementos);
+                
+                mapaPanel.repaint();
             }
 
             @Override
@@ -64,6 +109,181 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         });
     }
 
+    public DefaultListModel<Locacion> getDatosListaGrafica() {
+        return (DefaultListModel<Locacion>) this.locacionesList.getModel();
+    }
+    
+    public void inicializarGrafico() {
+        
+        Locacion lv1800 = new Locacion(347, 282);
+        lv1800.setNombre("LV-1800");
+        
+        Locacion labMecatronica = new Locacion(343, 239);
+        labMecatronica.setNombre("Laboratorios de ingeniería electromecánica y mecatrónica");
+        
+        Locacion lv1200 = new Locacion(337, 311);
+        lv1200.setNombre("LV-1200");
+        
+        Locacion lv1100elec = new Locacion(334, 338);
+        lv1100elec.setNombre("LV-1100");
+        
+        Locacion edfTutorias = new Locacion(342, 386);
+        edfTutorias.setNombre("Tutorias y Educacion Virtual");
+        
+        Locacion polideportivo = new Locacion(276, 285);
+        polideportivo.setNombre("Polideportivo");
+
+        Locacion cisco = new Locacion(387, 426);
+        cisco.setNombre("Cisco");
+
+        Locacion futbolRapido = new Locacion(392, 226);
+        futbolRapido.setNombre("Futbol rapido");
+
+        Locacion centroIdiomas = new Locacion(393, 484);
+        centroIdiomas.setNombre("Centro de idiomas");
+
+        Locacion biblioteca = new Locacion(515, 410);
+        biblioteca.setNombre("Biblioteca");
+
+        Locacion departamentosItson = new Locacion(603, 359);
+        departamentosItson.setNombre("Departamentos Itson");
+
+        Locacion registroEscolar = new Locacion(431, 418);
+        registroEscolar.setNombre("Registro Escolar");
+
+        Locacion arenaItson = new Locacion(86, 317);
+        arenaItson.setNombre("arena ITSON");
+
+        Locacion canchasBasquetbol = new Locacion(266, 505);
+        canchasBasquetbol.setNombre("Canchas de basquetbol");
+
+        Locacion cafeteria = new Locacion(548, 460);
+        cafeteria.setNombre("Cafeteria");
+
+        Locacion necropcias = new Locacion(695, 537);
+        necropcias.setNombre("Necropcias");
+        
+        this.listaLocaciones = new ArrayList<>();
+        
+        this.listaLocaciones.add(lv1800);
+        this.listaLocaciones.add(labMecatronica);
+        this.listaLocaciones.add(lv1200);
+        this.listaLocaciones.add(lv1100elec);
+        this.listaLocaciones.add(edfTutorias);
+        this.listaLocaciones.add(polideportivo);
+        this.listaLocaciones.add(cisco);
+        this.listaLocaciones.add(futbolRapido);
+        this.listaLocaciones.add(centroIdiomas);
+        this.listaLocaciones.add(biblioteca);
+        this.listaLocaciones.add(departamentosItson);
+        this.listaLocaciones.add(registroEscolar);
+        this.listaLocaciones.add(arenaItson);
+        this.listaLocaciones.add(canchasBasquetbol);
+        this.listaLocaciones.add(cafeteria);
+        this.listaLocaciones.add(necropcias);
+        
+        
+        /*
+        this.grafo = {
+          lv1800  {0, 40, 73, 104, 150, 100, 200, 80, 0, 0, 0, 0, 0, 0, 0, 0},
+           labMecatronica {40, 0, 55, 80, 138, 188, 0, 60, 0, 0, 0, 0, 0, 0, 0, 0},
+            lv1200 {50, 90, 0, 55, 100, 0, 0, 0, 0, 0, 0, 0, 200, 0, 0, 0},
+           lv1100elec{90, 150, 55, 0, 40, 0, 0, 0, 0, 0, 0, 0, 200, 0, 0, 0},
+            edfTutorias{138, 200, 98, 50, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            polideportivo{80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 120, 0, 0, 0},
+            cisco{0, 0, 0, 0, 0, 0, 0, 250, 65, 150, 0, 50, 0, 0, 0, 0},
+            futbolRapido{0, 62, 0, 0, 0, 0, 241, 0, 310, 0, 0, 0, 0, 0, 0, 0},
+            centroIdiomas{0, 0, 0, 0, 0, 0, 60, 313, 0, 0, 0, 0, 0, 0, 0, 0},
+           biblioteca {0, 0, 0, 0, 0, 0, 147, 0, 0, 0, 0, 102, 0, 0, 48, 0},
+            departamentosItson{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 162, 0, 0, 0, 0, 0},
+            registroEscolar{0, 0, 0, 0, 0, 0, 47, 0, 0, 100, 0, 0, 0, 0, 0, 0},
+            arenaItson{200, 0, 202, 208, 0, 135, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+           canchasBasquetbol {0, 0, 0, 0, 0, 256, 0, 0, 0, 0, 0, 0, 0, 0, 0,433},
+           cafeteria{0, 0, 0, 0, 0, 0, 0, 0, 0, 48, 0, 0, 0, 0, 0, 0},
+            necropcias{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 162, 0, 0,433, 0, 0},
+        
+            
+        };
+        */
+        
+        int auxGrafo[][] = {
+            /* 0 */{0, 40, 73, 104, 150, 100, 200, 80, 0, 0, 0, 0, 0, 0, 0, 0},
+            /* 1 */{40, 0, 55, 80,  138, 188, 0,   60, 0, 0, 0, 0, 0, 0, 0, 0},
+            /* 2 */{50, 90, 0, 55, 100, 0, 0, 0, 0, 0, 0, 0, 200, 0, 0, 0},
+            /* 3 */{90, 150, 55, 0, 40, 0, 0, 0, 0, 0, 0, 0, 200, 0, 0, 0},
+            /* 4 */{138, 200, 98, 50, 0, 0, 55, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            /* 5 */{80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 120, 0, 0, 0},
+            /* 6 */{0, 0, 0, 0, 55, 0, 0, 250, 65, 150, 0, 50, 0, 0, 0, 0},
+            /* 7 */{0, 62, 0, 0, 0, 0, 241, 0, 310, 0, 0, 0, 0, 0, 0, 0},
+            /* 8 */{0, 0, 0, 0, 0, 0, 60, 313, 0, 0, 0, 70, 0, 85, 132, 0},
+            /* 9 */{0, 0, 0, 0, 0, 0, 147, 0, 0, 0, 110, 102, 0, 0, 48, 0},
+            /*10 */{0, 0, 0, 0, 0, 0, 0, 0, 0, 110, 162, 0, 0, 0, 0, 0},
+            /*11 */{0, 0, 0, 0, 0, 0, 47, 0, 70, 100, 0, 0, 0, 0, 0, 0},
+            /*12 */{200, 0, 202, 208, 0, 135, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            /*13 */{0, 0, 0, 0, 0, 256, 0, 0, 85, 0, 0, 0, 0, 0, 0, 433},
+            /*14 */{0, 0, 0, 0, 0, 0, 0, 0, 132, 48, 0, 0, 0, 0, 0, 180},
+            /*15 */{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 162, 0, 0, 433, 180, 0}
+        };
+        
+        // TODO: Crear una ruta al edificio 1300 para que sea mas util el programa...
+        
+        this.grafo = auxGrafo;
+
+        
+        this.actualizarListaGrafica();
+        //this.calculadorRutas = Dijkstra();
+    }
+    
+    public void actualizarListaGrafica() {
+        DefaultComboBoxModel<Locacion> locacionesModel = new DefaultComboBoxModel<>();
+        
+        int i=0;
+        
+        for (Locacion l: listaLocaciones) {
+            l.setId(i);
+            i++;
+        }
+        
+        for (Locacion loc: this.listaLocaciones) {
+            locacionesModel.addElement(loc);
+            i++;
+        }
+        
+        this.locacionesList.setModel(locacionesModel);
+    }
+    
+    public void prepararGrafo() {
+        
+    }
+
+    public void dibujarAristasNodos(Graphics2D g2d) {
+        
+        Locacion loc1 = null;
+        Locacion loc2 = null;
+        
+        for (int puntoOrigenId=0; puntoOrigenId < this.grafo.length; puntoOrigenId++) {
+            loc1 = this.listaLocaciones.get(puntoOrigenId);
+            
+            for (int distanciaPuntoId=0; distanciaPuntoId < this.grafo.length; distanciaPuntoId++) {
+                // se omite el nodo origen en la lectura de las distancias de la matriz de adyacencias
+                if (puntoOrigenId != distanciaPuntoId) {
+                    int distancia = this.grafo[puntoOrigenId][distanciaPuntoId];
+                    if (distancia > 0) {
+                        loc2 = this.listaLocaciones.get(distanciaPuntoId);
+                        
+                        DibujaFormas.dibujarAristaEntreLocaciones(g2d, loc1, loc2, false);
+                    }
+                }
+            }
+        }
+    }
+    
+    public void dibujarPuntosMapa(Graphics2D g2d) {
+        for (Locacion l: this.listaLocaciones) {
+            DibujaFormas.dibujarPunto(g2d, l);
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -85,19 +305,29 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
                 at.translate(10, 10);
 
                 g2d.setTransform(at);
+
+                g2d.drawImage(imagenMapaITSON.getImage(), 0, 0, null);
+
+                // opaca la imagen...
+                g2d.setColor(new Color(0, 0, 0, 70));
+                g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
+
+                // dibuja el mapa con sus nodos
+                dibujarAristasNodos(g2d);
+                dibujarPuntosMapa(g2d);
+
                 //g2d.setTransform(at);
                 //g2d.setColor(Color.BLACK);
                 //g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
-                g2d.drawImage(imagenMapaITSON.getImage(), 0, 0, null);
 
             }
         };
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        locacionesList = new javax.swing.JList<>();
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        botonAsignarDistancia = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
@@ -116,14 +346,12 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(jList1);
+        DefaultListModel<Locacion> modelo = new DefaultListModel<>();
+        locacionesList.setModel(modelo);
+        jScrollPane1.setViewportView(locacionesList);
 
         jButton1.setText("Agregar");
+        jButton1.setEnabled(false);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -131,8 +359,15 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         });
 
         jButton2.setText("Eliminar");
+        jButton2.setEnabled(false);
 
-        jButton3.setText("jButton3");
+        botonAsignarDistancia.setText("Asignar Distancia");
+        botonAsignarDistancia.setEnabled(false);
+        botonAsignarDistancia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonAsignarDistanciaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -143,7 +378,7 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton3)
+                .addComponent(botonAsignarDistancia)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -152,7 +387,7 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(botonAsignarDistancia))
                 .addGap(0, 208, Short.MAX_VALUE))
         );
 
@@ -236,6 +471,18 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void botonAsignarDistanciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonAsignarDistanciaActionPerformed
+        
+        Locacion seleccionado = this.locacionesList.getSelectedValue();
+        
+        if (seleccionado == null) {
+            return;
+        }
+        
+        AsignarDistanciaDialog dlg = new AsignarDistanciaDialog(this, true, seleccionado, this.listaLocaciones);
+        
+    }//GEN-LAST:event_botonAsignarDistanciaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -272,16 +519,16 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton botonAsignarDistancia;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JList<Locacion> locacionesList;
     private javax.swing.JPanel mapaPanel;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,165 +1,131 @@
-package grafos;
 
-//Programa en Java para el algoritmo de Dijkstra que encuentra
+package grafos;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Stack;
 
-//el camino mas corto para un unico origen
-//Se emplea una matrix de adjacencia para representar el grafo
+/**
+ *
+ * @author saul
+ */
 
 public class Dijkstra {
+    
+    private int matrizAdyacencias[][];
+    private int numeroVertices;
 
-    // Numero de vertices en el grafo
-    static final int V = 9;
-
-    // Funcion utilitaria para encontrar el vertice con la distancia minima, 
-    // a partir del conjunto de los vertices todavia no incluidos en el 
-    // camino mas corto
-    private static int minDistance(int[] dist, boolean[] verticeYaProcesado) {
-        // Initialize min value
-        int min = Integer.MAX_VALUE;
-        int min_index = 0;
-
-        for (int v = 0; v < V; v++) {
-            if (verticeYaProcesado[v] == false && dist[v] <= min) {
-                min = dist[v];
-                min_index = v;
-            }
-        }
-
-        return min_index;
+    public Dijkstra(int[][] matriz) {
+        this.matrizAdyacencias = matriz;
+        this.numeroVertices = matriz.length;
     }
 
-    // Funcion utilitaria para imprimir el arreglo de distancias calculadas
-    private static void printSolution(int[] dist, int n) {
-        System.out.println("Distancia del vertice desde el origen\n");
-        for (int i = 0; i < V; i++) {
-            System.out.println(i + " \t\t " + dist[i]);
-        }
-    }
-
-    private static void dijkstra(int[][] grafo, int src) {
-        int[] dist = new int[V];
-        // dist[i] guarda la distancia mas corta desde src hasta el vertice i
-
-        boolean[] verticeYaProcesado = new boolean[V];
-        //Este arreglo tiene true si el vertice i ya fue procesado
-
-        // Initialize all distances as INFINITE and stpSet[] as false
-        for (int i = 0; i < V; i++) {
-            dist[i] = Integer.MAX_VALUE;
-            verticeYaProcesado[i] = false;
-        }
-        // La distancia del vertice origen hacia el mismo es siempre 0
-        dist[src] = 0;
-
-        //Encuentra el camino mas corto para todos los vertices
-        for (int count = 0; count < V - 1; count++) {
-
-            //Toma el vertice con la distancia minima del cojunto de vertices aun no procesados
-            //En la primera iteracion siempre se devuelve src
-            int u = minDistance(dist, verticeYaProcesado);
-
-            // Se marca como ya procesado
-            verticeYaProcesado[u] = true;
-
-            // Update dist value of the adjacent vertices of the picked vertex.
-            for (int v = 0; v < V; v++) //Se actualiza la dist[v] solo si no esta en verticeYaProcesado, hay un
-            //arco desde u a v y el peso total del camino desde src hasta v a traves de u es 
-            // mas pequeno que el valor actual de dist[v]
-            {
-                if (!verticeYaProcesado[v] && grafo[u][v] > 0 && dist[u] != Integer.MAX_VALUE
-                        && dist[u] + grafo[u][v] < dist[v]) {
-                    dist[v] = dist[u] + grafo[u][v];
-                }
-            }
-        }
-
-        // se imprime el arreglo con las distancias
-        printSolution(dist, V);
-}
-    private static void dijkstraRastro(int[][] grafo, int src, List<Integer> nodosVisitados) {
-    int V = grafo.length;
-    int[] dist = new int[V];
-    boolean[] verticeYaProcesado = new boolean[V];
-
-    for (int i = 0; i < V; i++) {
-        dist[i] = Integer.MAX_VALUE;
-        verticeYaProcesado[i] = false;
-    }
-    dist[src] = 0;
-
-    for (int count = 0; count < V - 1; count++) {
-        int u = minDistance(dist, verticeYaProcesado);
-        verticeYaProcesado[u] = true;
-
-        for (int v = 0; v < V; v++) {
-            if (!verticeYaProcesado[v] && grafo[u][v] > 0 && dist[u] != Integer.MAX_VALUE
-                    && dist[u] + grafo[u][v] < dist[v]) {
-                dist[v] = dist[u] + grafo[u][v];
-                nodosVisitados.add(v); // Agrega el índice del nodo visitado
-            }
-        }
-    }
-} 
-
-    // TODO: No traza bien las rutas de los indices de los pesos de las aristas, marca una
-    // ruta erronea.
-    public static void dijkstra(int[][] grafo, int src, int dest, List<Integer> nodosVisitados) {
-        int V = grafo.length;
-        int[] dist = new int[V];
+    public ResultadoBusqueda calcularRutas(int indiceInicio) {
+        int arrDistancias[] = new int[numeroVertices];
+        int arrPredecesores[] = new int[numeroVertices];
         
-        Arrays.fill(dist, Integer.MAX_VALUE);
-        dist[src] = 0;
+        // se rellena el arreglo con valores grandes para TODO:
+        Arrays.fill(arrDistancias, Integer.MAX_VALUE);
+        Arrays.fill(arrPredecesores, -1);
+        
+        // distancia de inicio por defecto
+        arrDistancias[indiceInicio] = 0;
 
-        PriorityQueue<Integer> colaPrioridad = new PriorityQueue<>((a, b) -> dist[a] - dist[b]);
-        colaPrioridad.add(src);
+        PriorityQueue<Nodo> cola = new PriorityQueue<>(numeroVertices, 
+                (a, b) -> Integer.compare(a.getDistancia(), b.getDistancia())
+        );
+        
+        cola.add(new Nodo(indiceInicio, 0));
 
-        while (!colaPrioridad.isEmpty()) {
-            int u = colaPrioridad.poll();
-            
-            nodosVisitados.add(u);
+        boolean visitados[] = new boolean[numeroVertices];
 
-            for (int v = 0; v < V; v++) {
-                if (grafo[u][v] > 0 && dist[u] != Integer.MAX_VALUE && dist[u] + grafo[u][v] < dist[v]) {
-                    dist[v] = dist[u] + grafo[u][v];
-                    colaPrioridad.add(v);
+        while (!cola.isEmpty()) {
+            int nodoActual = cola.poll().getId();
+
+            if (visitados[nodoActual]) continue;
+            visitados[nodoActual] = true;
+
+            for (int i = 0; i < numeroVertices; i++) {
+                
+                int distancia = matrizAdyacencias[nodoActual][i];
+                
+                if (distancia > 0 && !visitados[i] && arrDistancias[nodoActual] + distancia < arrDistancias[i]) {
+                    // se suma la distancia del vertice (nodo) actual con la actual en el bucle...
+                    arrDistancias[i] = arrDistancias[nodoActual] + distancia;
+                    arrPredecesores[i] = nodoActual;
+                    cola.add(new Nodo(i, arrDistancias[i]));
                 }
             }
         }
 
-        System.out.println("Distancia mínima desde " + src + " hasta " + dest + ": " + dist[dest]);
+        return new ResultadoBusqueda(arrDistancias, arrPredecesores);
+    }
+    
+    /**
+     * Devuelve la distancia entre dos nodos
+     * @param idOrigen ID del nodo origen (indice en el arreglo de adyacencias)
+     * @param idDestino ID del nodo destino (indice en el arreglo de adyacencias)
+     * @return
+     * @throws IllegalArgumentException 
+     */
+    public int getDistanciaMinima(int idOrigen, int idDestino) throws IllegalArgumentException {
+        
+        if (!(idOrigen >= 0 && idOrigen < this.matrizAdyacencias.length)) {
+            throw new IllegalArgumentException("El ID del nodo de origen es incorrecto");
+        }
+        
+        if (!(idDestino >= 0 && idDestino < this.matrizAdyacencias.length)) {
+            throw new IllegalArgumentException("El ID del nodo de destino es incorrecto");
+        }
+        
+        return this.calcularRutas(idOrigen).getDistancias()[idDestino];
     }
 
-    
-    
-// driver program to test above function
-public static void main(String[] args)
-{
-   int[][] graph = {  {0, 4, 0, 0, 0, 0, 0, 8, 0},
-                      {4, 0, 8, 0, 0, 0, 0, 11, 0},
-                      {0, 8, 0, 7, 0, 4, 0, 0, 2},
-                      {0, 0, 7, 0, 9, 14, 0, 0, 0},
-                      {0, 0, 0, 9, 0, 10, 0, 0, 0},
-                      {0, 0, 4, 0, 10, 0, 2, 0, 0},
-                      {0, 0, 0, 14, 0, 2, 0, 1, 6},
-                      {8, 11, 0, 0, 0, 0, 1, 0, 7},
-                      {0, 0, 2, 0, 0, 0, 6, 7, 0}
-                     };
- 
-    dijkstra(graph, 0);
-    System.out.println("--------------------------------");
-    dijkstra(graph, 1);
-    
-    List<Integer> visitados = new ArrayList<>();
-    
-    dijkstra(graph, 0, 4, visitados);
-    
-    System.out.println(visitados);
-    
-    System.out.println();
+    /**
+     * Devuelve los indices (ID) de los nodos por los cuales se llega de origen a destino
+     * @param idOrigen ID del nodo origen (empezando por 0)
+     * @param idDestino ID del nodo destino (empezando por 0)
+     * @return
+     * @throws Exception 
+     */
+    public List<Integer> getTrazaBusquedaRutaMinima(int idOrigen, int idDestino) throws Exception {
+        
+        if (!(idOrigen >= 0 && idOrigen < this.matrizAdyacencias.length)) {
+            throw new Exception("El ID del nodo de origen es incorrecto");
+        }
+        
+        if (!(idDestino >= 0 && idDestino < this.matrizAdyacencias.length)) {
+            throw new Exception("El ID del nodo de destino es incorrecto");
+        }
+        
+        ResultadoBusqueda resultadoBusqueda = this.calcularRutas(idOrigen);
+        int arrDistancias[]     = resultadoBusqueda.getDistancias();
+        int arrPredecesores[]   = resultadoBusqueda.getPredecesores();
+        int distanciaMinima     = arrDistancias[idDestino];
+
+        if (distanciaMinima == Integer.MAX_VALUE) {
+            String msg = String.format(
+                    "No existe una ruta que conecte al Punto(%d) origen con el Punto(%d) destino", 
+                    idOrigen, 
+                    idDestino
+            );
+            
+            throw new Exception(msg);
+        } 
+        
+        Stack<Integer> ruta = new Stack<>();
+        for (int i = idDestino; i != -1; i = arrPredecesores[i]) ruta.push(i);
+        
+
+        List<Integer> rastroTraza = new ArrayList<>();
+        
+        while (!ruta.isEmpty()) {
+            rastroTraza.add(ruta.pop());
+        }
+        
+        return rastroTraza;
+    }
 }
-}
+
