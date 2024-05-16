@@ -17,10 +17,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -35,6 +38,12 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
     
     private Dijkstra calculadorRutas;
     private List<Locacion> listaLocaciones;
+    
+    private Locacion origenSeleccionado;
+    private Locacion destinoSeleccionado;
+    private List<Integer> trazaRutaActual;
+    
+    private boolean dibujarCamino;
     
     private int[][] grafo;
     
@@ -59,8 +68,10 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
             public void valueChanged(ListSelectionEvent lse) {
                 if (locacionesList.getSelectedValue() != null) {
                     botonAsignarDistancia.setEnabled(true);
+                    botonCalcularDistancia.setEnabled(true);
                 } else {
                     botonAsignarDistancia.setEnabled(false);
+                    botonCalcularDistancia.setEnabled(false);
                 }
             }
         
@@ -256,6 +267,33 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         
     }
 
+    public void dibujarTrazaCamino(Graphics2D g2d) {
+        
+        int penultimoPuntoId = (this.trazaRutaActual.size() - 1);
+        
+        if (this.trazaRutaActual.size() == 2) {
+            DibujaFormas.dibujarAristaEntreLocaciones(g2d, this.origenSeleccionado, this.destinoSeleccionado, true);
+            return;
+        }
+        
+        
+        for (int i=0; i< this.trazaRutaActual.size() - 1; i++) {
+            
+            int idLocacionOrigen = this.trazaRutaActual.get(i);
+            
+            Locacion origen = this.listaLocaciones.get(idLocacionOrigen);
+
+            int idLocacionSiguiente = this.trazaRutaActual.get(i+1);
+            Locacion siguiente = this.listaLocaciones.get(idLocacionSiguiente);
+            
+            //System.out.println("paso: " + idLocacionOrigen +" a destino: " + idLocacionSiguie);
+            
+            if (siguiente != null) {
+                DibujaFormas.dibujarAristaEntreLocaciones(g2d, origen, siguiente, true);
+            }
+        }
+    }
+    
     public void dibujarAristasNodos(Graphics2D g2d) {
         
         Locacion loc1 = null;
@@ -314,6 +352,12 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
 
                 // dibuja el mapa con sus nodos
                 dibujarAristasNodos(g2d);
+
+                if (dibujarCamino) {
+                    dibujarTrazaCamino(g2d);
+                    dibujarCamino = false;
+                }
+
                 dibujarPuntosMapa(g2d);
 
                 //g2d.setTransform(at);
@@ -325,9 +369,10 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         locacionesList = new javax.swing.JList<>();
         jPanel2 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         botonAsignarDistancia = new javax.swing.JButton();
+        botonCalcularDistancia = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        campoDistanciaAprox = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
@@ -350,17 +395,6 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         locacionesList.setModel(modelo);
         jScrollPane1.setViewportView(locacionesList);
 
-        jButton1.setText("Agregar");
-        jButton1.setEnabled(false);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setText("Eliminar");
-        jButton2.setEnabled(false);
-
         botonAsignarDistancia.setText("Asignar Distancia");
         botonAsignarDistancia.setEnabled(false);
         botonAsignarDistancia.addActionListener(new java.awt.event.ActionListener() {
@@ -369,26 +403,44 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
             }
         });
 
+        botonCalcularDistancia.setText("Calcular Distancia");
+        botonCalcularDistancia.setEnabled(false);
+        botonCalcularDistancia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                botonCalcularDistanciaActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Distancia (metros): ");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(botonAsignarDistancia)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(botonCalcularDistancia)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(botonAsignarDistancia))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(campoDistanciaAprox, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 6, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(botonAsignarDistancia))
-                .addGap(0, 208, Short.MAX_VALUE))
+                    .addComponent(botonAsignarDistancia)
+                    .addComponent(botonCalcularDistancia))
+                .addGap(30, 30, 30)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(campoDistanciaAprox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 154, Short.MAX_VALUE))
         );
 
         jLabel1.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
@@ -467,10 +519,6 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void botonAsignarDistanciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonAsignarDistanciaActionPerformed
         
         Locacion seleccionado = this.locacionesList.getSelectedValue();
@@ -482,6 +530,48 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         AsignarDistanciaDialog dlg = new AsignarDistanciaDialog(this, true, seleccionado, this.listaLocaciones);
         
     }//GEN-LAST:event_botonAsignarDistanciaActionPerformed
+
+    private void botonCalcularDistanciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonCalcularDistanciaActionPerformed
+        Locacion seleccionado = this.locacionesList.getSelectedValue();
+        
+        if (seleccionado == null) {
+            return;
+        }
+        
+        CalcularDistanciaDialog dlg = new CalcularDistanciaDialog(this, true, seleccionado, this.listaLocaciones);
+        
+        this.origenSeleccionado = seleccionado;
+ 
+        this.destinoSeleccionado = dlg.getDestino();
+        
+        Dijkstra dijkstra = new Dijkstra(this.grafo);
+        
+        try {
+            this.trazaRutaActual = dijkstra.getTrazaBusquedaRutaMinima(this.origenSeleccionado.getId(), this.destinoSeleccionado.getId());
+        } catch (Exception ex) {
+            this.mapaPanel.repaint();
+            this.campoDistanciaAprox.setText("");
+            
+            JOptionPane.showMessageDialog(
+                    this, 
+                    "No existe un camino para llegar a esa ruta", 
+                    "Locacion desconocida", 
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+        
+        System.out.println(this.trazaRutaActual);
+        
+        this.dibujarCamino = true;
+        
+        int distanciaMetros = dijkstra.getDistanciaMinima(this.origenSeleccionado.getId(), this.destinoSeleccionado.getId());
+        
+        this.campoDistanciaAprox.setText(String.valueOf(distanciaMetros));
+        
+        
+        this.mapaPanel.repaint();
+    }//GEN-LAST:event_botonCalcularDistanciaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -520,10 +610,11 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonAsignarDistancia;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton botonCalcularDistancia;
+    private javax.swing.JTextField campoDistanciaAprox;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
