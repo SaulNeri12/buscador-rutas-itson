@@ -206,8 +206,31 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         };
         */
         
-        this.actualizarListaGrafica();
+        int auxGrafo[][] = {
+            /* 0 */{0, 40, 73, 104, 150, 100, 200, 80, 0, 0, 0, 0, 0, 0, 0, 0},
+            /* 1 */{40, 0, 55, 80,  138, 188, 0,   60, 0, 0, 0, 0, 0, 0, 0, 0},
+            /* 2 */{50, 90, 0, 55, 100, 0, 0, 0, 0, 0, 0, 0, 200, 0, 0, 0},
+            /* 3 */{90, 150, 55, 0, 40, 0, 0, 0, 0, 0, 0, 0, 200, 0, 0, 0},
+            /* 4 */{138, 200, 98, 50, 0, 0, 55, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            /* 5 */{80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 120, 0, 0, 0},
+            /* 6 */{0, 0, 0, 0, 55, 0, 0, 250, 65, 150, 0, 50, 0, 0, 0, 0},
+            /* 7 */{0, 62, 0, 0, 0, 0, 241, 0, 310, 0, 0, 0, 0, 0, 0, 0},
+            /* 8 */{0, 0, 0, 0, 0, 0, 60, 313, 0, 0, 0, 70, 0, 85, 132, 0},
+            /* 9 */{0, 0, 0, 0, 0, 0, 147, 0, 0, 0, 110, 102, 0, 0, 48, 0},
+            /*10 */{0, 0, 0, 0, 0, 0, 0, 0, 0, 110, 162, 0, 0, 0, 0, 0},
+            /*11 */{0, 0, 0, 0, 0, 0, 47, 0, 70, 100, 0, 0, 0, 0, 0, 0},
+            /*12 */{200, 0, 202, 208, 0, 135, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            /*13 */{0, 0, 0, 0, 0, 256, 0, 0, 85, 0, 0, 0, 0, 0, 0, 433},
+            /*14 */{0, 0, 0, 0, 0, 0, 0, 0, 132, 48, 0, 0, 0, 0, 0, 180},
+            /*15 */{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 162, 0, 0, 433, 180, 0}
+        };
         
+        // TODO: Crear una ruta al edificio 1300 para que sea mas util el programa...
+        
+        this.grafo = auxGrafo;
+
+        
+        this.actualizarListaGrafica();
         //this.calculadorRutas = Dijkstra();
     }
     
@@ -231,6 +254,28 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
     
     public void prepararGrafo() {
         
+    }
+
+    public void dibujarAristasNodos(Graphics2D g2d) {
+        
+        Locacion loc1 = null;
+        Locacion loc2 = null;
+        
+        for (int puntoOrigenId=0; puntoOrigenId < this.grafo.length; puntoOrigenId++) {
+            loc1 = this.listaLocaciones.get(puntoOrigenId);
+            
+            for (int distanciaPuntoId=0; distanciaPuntoId < this.grafo.length; distanciaPuntoId++) {
+                // se omite el nodo origen en la lectura de las distancias de la matriz de adyacencias
+                if (puntoOrigenId != distanciaPuntoId) {
+                    int distancia = this.grafo[puntoOrigenId][distanciaPuntoId];
+                    if (distancia > 0) {
+                        loc2 = this.listaLocaciones.get(distanciaPuntoId);
+                        
+                        DibujaFormas.dibujarAristaEntreLocaciones(g2d, loc1, loc2, false);
+                    }
+                }
+            }
+        }
     }
     
     public void dibujarPuntosMapa(Graphics2D g2d) {
@@ -268,6 +313,7 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
                 g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
 
                 // dibuja el mapa con sus nodos
+                dibujarAristasNodos(g2d);
                 dibujarPuntosMapa(g2d);
 
                 //g2d.setTransform(at);
