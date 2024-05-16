@@ -36,6 +36,8 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
     private Dijkstra calculadorRutas;
     private List<Locacion> listaLocaciones;
     
+    private int[][] grafo;
+    
     /**
      * Creates new form RutasDijkstraFrame
      */
@@ -179,6 +181,22 @@ public class RutasDijkstraFrame extends javax.swing.JFrame {
         this.listaLocaciones.add(canchasBasquetbol);
         this.listaLocaciones.add(cafeteria);
         this.listaLocaciones.add(necropcias);
+        
+        
+        /*
+        this.grafo = {
+            {0, 40, 73, 104, 150, 100, 200, 80, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            
+        };
+        */
         
         this.actualizarListaGrafica();
         
